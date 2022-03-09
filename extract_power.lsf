@@ -1,0 +1,19 @@
+Pi = getresult('inpp1','P');
+Pi = Pi.P;
+Pi = Pi(:,:,:,:,1);
+
+Po1 = getresult('outp1','P');
+Po1 = Po1.P;
+Po1 = Po1(:,:,:,:,1);
+
+Po2 = getresult('outp2','P');
+Po2 = Po2.P;
+Po2 = Po2(:,:,:,:,1);
+
+
+Po = mean(Pi);
+P1 = mean(Po1);
+P2 = mean(Po2);
+
+
+error = ((P2*11.5)/(P1*7.5))^2;

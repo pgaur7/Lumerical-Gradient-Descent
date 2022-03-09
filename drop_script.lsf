@@ -1,0 +1,19 @@
+function drop(i,oil_x,oil_y,r,r2,rot,slab_h){
+    
+    n_oil = 2;
+    addcircle;
+    set('name','oil'+num2str(i));
+    set('index',n_oil);
+    set('make ellipsoid',1);
+    set('first axis','z');
+    set('x',oil_x(i));
+    set('y',oil_y(i));
+    set('radius',r(i));
+    set('radius 2',r2(i));
+    set('rotation 1',rot(i));
+    set('z min',-slab_h/2);set('z max',slab_h/2);
+    set('override mesh order from material database', 1);
+    set('mesh order',2);
+    
+    return 0;
+}

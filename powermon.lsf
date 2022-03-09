@@ -1,0 +1,15 @@
+slab_h = 0.22e-6;
+slab_t = 25e-6;
+slab_l = 40e-6;
+
+waveg_h = 0.22e-6;
+waveg_l = 1e-6;
+
+addmovie;
+set('name','movie');
+set('monitor type','2D Z-normal');
+set('x min',-slab_l/2 -2e-6);set('x max',slab_l+5e-6);
+set('y min',-slab_t/2 -2e-6);set('y max',slab_l+5e-6);
+set('z',0);
+set('horizontal resolution',1920);
+set('lock aspect ratio',1);

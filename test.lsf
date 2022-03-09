@@ -1,0 +1,30 @@
+n_air = 1.8;
+n_oil = 2;
+
+slab_h = 0.22e-6;
+slab_t = 25e-6;
+slab_l = 40e-6;
+
+waveg_h = 0.22e-6;
+waveg_l = 1e-6;
+
+
+inp_x = -slab_l/2;
+inp_t = 1e-6;
+outp_t1 = 5e-6;
+outp_t2 = 5e-6;
+outp_t3 = 5e-6;
+outp_y = [-slab_t/2 + 3e-6; -slab_t/2; -slab_t/2 + 3e-6];
+outp_x = [-3.5,0,3.5]*1e-6;
+
+outg_l = 6e-6;
+wavef_t =5e-6;
+
+source_h = 0.5e-6;
+source_t = 1.5e-6;
+source_x = -slab_l/2;
+
+custom_source_script;
+select('custom_source');
+delete;
+custom_source(1,1,source_x,0,source_t,source_h);

@@ -1,0 +1,359 @@
+rtx = 0.04e7;
+rty = 0.01e7;
+rtr = 0.4e8;
+rtr2 = 0.4e8; 
+rtrot = 30e8;
+target = -1;
+for(i = 1:8){
+     
+    ?'iteration: ' + num2str(i) ;  
+    ## r
+     for(j = 1:5){
+           
+
+        switchtolayout;
+        gr = 1e-7;
+        select('oil'+num2str(j));
+        delete;
+        r(j) = r(j) + gr;
+        drop(j,oil_x,oil_y,r,r2,rot,slab_h);
+   
+        select('custom_source');
+        delete;
+        custom_source(1,1,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P11 = P;
+
+        switchtolayout;
+        select('custom_source');
+        delete;
+        custom_source(1,0,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P10 = P;
+        extract_power_init1;
+        P01 = P;
+        error = cal_err(P11,P10,P01);
+
+        r(j) = r(j)-gr-rtr*(error-errormin)*gr;
+
+        
+        switchtolayout;
+        select('oil'+num2str(j));
+        delete;
+        drop(j,oil_x,oil_y,r,r2,rot,slab_h);
+        select('custom_source');
+        delete;
+        custom_source(1,1,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P11 = P;
+
+        switchtolayout;
+        select('custom_source');
+        delete;
+        custom_source(1,0,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P10 = P;
+        extract_power_init1;
+        P01 = P;
+        error = cal_err(P11,P10,P01);
+        errormin = error;
+        ?errormin;
+        if(errormin<target){
+            break;
+        }
+        if(errormin<minimum){
+            minimum = errormin;
+        }
+        
+        
+      
+    }
+ 
+    
+
+     ############################################
+     ############################################
+     ############################################
+    
+     ## r2
+     for(j = 1:5){
+           
+
+        switchtolayout;
+        gr2 = 1e-7;
+        select('oil'+num2str(j));
+        delete;
+        r2(j) = r2(j) + gr2;
+        drop(j,oil_x,oil_y,r,r2,rot,slab_h);
+   
+        select('custom_source');
+        delete;
+        custom_source(1,1,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P11 = P;
+
+        switchtolayout;
+        select('custom_source');
+        delete;
+        custom_source(1,0,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P10 = P;
+        extract_power_init1;
+        P01 = P;
+        error = cal_err(P11,P10,P01);
+        r2(j) = r2(j)-gr2-rtr2*(error-errormin)*gr2;
+
+        
+        switchtolayout;
+        select('oil'+num2str(j));
+        delete;
+        drop(j,oil_x,oil_y,r,r2,rot,slab_h);
+        select('custom_source');
+        delete;
+        custom_source(1,1,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P11 = P;
+
+        switchtolayout;
+        select('custom_source');
+        delete;
+        custom_source(1,0,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P10 = P;
+        extract_power_init1;
+        P01 = P;
+        error = cal_err(P11,P10,P01);
+        errormin = error;
+        ?errormin;
+        if(errormin<target){
+            break;
+        }
+        if(errormin<minimum){
+            minimum = errormin;
+        }
+    
+    }
+ 
+    
+
+     ############################################
+     ############################################
+     ############################################    
+    
+     ## rot
+     for(j = 1:5){
+           
+
+        switchtolayout;
+        grot = 1;
+        select('oil'+num2str(j));
+        delete;
+        rot(j) = rot(j) + grot;
+        drop(j,oil_x,oil_y,r,r2,rot,slab_h);
+   
+        select('custom_source');
+        delete;
+        custom_source(1,1,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P11 = P;
+
+        switchtolayout;
+        select('custom_source');
+        delete;
+        custom_source(1,0,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P10 = P;
+        extract_power_init1;
+        P01 = P;
+        error = cal_err(P11,P10,P01);
+        rot(j) = rot(j)-grot-rtrot*(error-errormin)*grot;
+
+        
+        switchtolayout;
+        select('oil'+num2str(j));
+        delete;
+        drop(j,oil_x,oil_y,r,r2,rot,slab_h);
+        select('custom_source');
+        delete;
+        custom_source(1,1,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P11 = P;
+
+        switchtolayout;
+        select('custom_source');
+        delete;
+        custom_source(1,0,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P10 = P;
+        extract_power_init1;
+        P01 = P;
+        error = cal_err(P11,P10,P01);
+        errormin = error;
+        ?errormin;
+       
+        if(errormin<target){
+            break;
+        }
+        if(errormin<minimum){
+            minimum = errormin;
+        }
+    }
+ 
+    
+
+     ############################################
+     ############################################
+     ############################################    
+    ## x
+    
+    for(j = 1:5){
+           
+
+        switchtolayout;
+        g = 5e-7;
+        select('oil'+num2str(j));
+        delete;
+        oil_x(j) = oil_x(j) + g;
+        drop(j,oil_x,oil_y,r,r2,rot,slab_h);
+   
+        select('custom_source');
+        delete;
+        custom_source(1,1,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P11 = P;
+
+        switchtolayout;
+        select('custom_source');
+        delete;
+        custom_source(1,0,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P10 = P;
+        extract_power_init1;
+        P01 = P;
+        error = cal_err(P11,P10,P01);
+        oil_x(j) = oil_x(j)-g-rtx*(error-errormin)*g;
+
+        
+        switchtolayout;
+        select('oil'+num2str(j));
+        delete;
+        drop(j,oil_x,oil_y,r,r2,rot,slab_h);
+        select('custom_source');
+        delete;
+        custom_source(1,1,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P11 = P;
+
+        switchtolayout;
+        select('custom_source');
+        delete;
+        custom_source(1,0,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P10 = P;
+        extract_power_init1;
+        P01 = P;
+        error = cal_err(P11,P10,P01);
+        errormin = error;
+        ?errormin;
+        if(errormin<target){
+            break;
+        }
+        if(errormin<minimum){
+            minimum = errormin;
+        }
+    }
+ 
+    
+
+     ############################################
+     ############################################
+     ############################################
+    
+    
+    ##  y
+    for(j = 1:5){
+
+        switchtolayout;
+        g = 5e-7;
+        select('oil'+num2str(j));
+        delete;
+        oil_y(j) = oil_y(j) + g;
+        drop(j,oil_x,oil_y,r,r2,rot,slab_h);
+        select('custom_source');
+        delete;
+        custom_source(1,1,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P11 = P;
+
+        switchtolayout;
+        select('custom_source');
+        delete;
+        custom_source(1,0,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P10 = P;
+        extract_power_init1;
+        P01 = P;
+        error = cal_err(P11,P10,P01);
+        oil_y(j) = oil_y(j)-g-rty*(error-errormin)*g;
+
+        
+        switchtolayout;
+        select('oil'+num2str(j));
+        delete;
+        drop(j,oil_x,oil_y,r,r2,rot,slab_h);
+        select('custom_source');
+        delete;
+        custom_source(1,1,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P11 = P;
+
+        switchtolayout;
+        select('custom_source');
+        delete;
+        custom_source(1,0,source_x,0,source_t,source_h);
+        run;
+        extract_power_init;
+        P10 = P;
+        extract_power_init1;
+        P01 = P;
+        error = cal_err(P11,P10,P01);
+        errormin = error;
+        ?errormin;
+        if(errormin<target){
+            break;
+        }
+        if(errormin<minimum){
+            minimum = errormin;
+        }
+    }    
+
+     
+}
+
+
+
+
+
+
+
+
+    

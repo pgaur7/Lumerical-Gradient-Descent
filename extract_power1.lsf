@@ -1,0 +1,17 @@
+switchtolayout;
+select('custom_source');
+        delete;
+        custom_source(1,1,source_x,inp_y,source_t,source_h);
+        run;
+        #extract_power_init;
+        #P11 = P;
+
+        #switchtolayout;
+        #select('custom_source');
+        #delete;
+        #custom_source(1,0,source_x,inp_y,source_t,source_h);
+        #run;
+        #extract_power_init;
+        #P10 = P;
+        #extract_power_init1;
+        #P01 = P;

@@ -1,0 +1,14 @@
+Po = getresult('outp1','P');
+Po = Po.P;
+size_time = size(Po,4);
+time_start = floor(4*size_time/5);
+time_stop = size_time;
+P = Po(:,:,:,time_start:time_stop,1);
+
+
+
+
+
+P = abs(mean(P));
+
+

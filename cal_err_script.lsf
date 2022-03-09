@@ -1,0 +1,5 @@
+function cal_err(P11,P10,P01){
+    
+    err_r = 10*(P11)^2 + (P10-0.0001)^2 + (P01-0.0001)^2;
+    return err_r ;
+}

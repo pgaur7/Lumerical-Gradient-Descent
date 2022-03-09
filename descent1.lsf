@@ -1,0 +1,436 @@
+switchtolayout;
+deleteall;
+
+setglobalsource("set time domain",1);
+setglobalsource("frequency",193.41e12);
+setglobalsource("pulselength",100e-15);
+setglobalsource("bandwidth",1e12);
+setglobalsource("offset",0);
+setglobalsource("pulse type",'standard');
+
+
+
+
+
+
+n_air = 1.8;
+n_oil = 2;
+
+slab_h = 0.22e-6;
+slab_t = 25e-6;
+slab_l = 40e-6;
+
+waveg_h = 0.22e-6;
+waveg_l = 1e-6;
+
+
+inp_x = -slab_l/2;
+inp_t = 1e-6;
+outp_t1 = 5e-6;
+outp_t2 = 5e-6;
+outp_t3 = 5e-6;
+outp_y = [-slab_t/2 + 3e-6; -slab_t/2; -slab_t/2 + 3e-6];
+outp_x = [-3.5,0,3.5]*1e-6;
+
+outg_l = 6e-6;
+wavef_t =5e-6;
+
+source_h = 0.5e-6;
+source_t = 1.5e-6;
+source_x = -slab_l/2;
+
+#taper_l = 30e-6;
+
+
+vtx = [0,-slab_t/2;slab_l/2,0;0,slab_t/2;-slab_l/2,0];
+addpoly;
+set('x',0);set('y',0);set('z',0);
+set('name','slab');
+set('index',n_air);
+set("name","slab");
+set("vertices",vtx);
+set("z span",slab_h);
+set('override mesh order from material database', 1);
+set('mesh order',3);
+
+
+##inp
+
+addrect;
+set('name','inp');
+set('index',n_air);
+set('x',inp_x);set('x span',2*waveg_l);
+set('y',0);set('y span',inp_t);
+set('z',0);set('z span',waveg_h);
+set('override mesh order from material database', 1);
+set('mesh order',2);
+
+#addrect;
+#set('name','inp_f1');
+#set('index',n_air);
+#set('x',inp_x);set('x span',waveg_l);
+#set('y',inp_y(1));set('y span',inp_t);
+#set('z',0);set('z span',waveg_h);
+#set('override mesh order from material database', 1);
+#set('mesh order',2);
+
+#addrect;
+#set('name','inp_f1');
+#set('index',n_air);
+#set('x',inp_x);set('x span',waveg_l);
+#set('y',inp_y(3));set('y span',inp_t);
+#set('z',0);set('z span',waveg_h);
+#set('override mesh order from material database', 1);
+#set('mesh order',2);
+
+
+
+
+#### outg
+
+#addrect;
+#set('name','out1');
+#set('index',n_air);
+#set('x',outp_x(1));set('x span',outp_t1);
+#set('y',outp_y(1));set('y span',outg_l);
+#set('z',0);set('z span',waveg_h);
+#set('override mesh order from material database', 1);
+#set('mesh order',2);
+
+addrect;
+set('name','out2');
+set('index',n_air);
+set('x',outp_x(2));set('x span',outp_t2);
+set('y',outp_y(2));set('y span',outg_l);
+set('z',0);set('z span',waveg_h);
+set('override mesh order from material database', 1);
+set('mesh order',2);
+
+#addrect;
+#set('name','out3');
+#set('index',n_air);
+#set('x',outp_x(3));set('x span',outp_t3);
+#set('y',outp_y(3));set('y span',outg_l);
+#set('z',0);set('z span',waveg_h);
+#set('override mesh order from material database', 1);
+#set('mesh order',2);
+
+#addrect;
+#set('name','out3');
+#set('index',n_air);
+#set('x',outp_x);set('x span',waveg_l);
+#set('y',outp_y(3));set('y span',outp_t3);
+#set('z',0);set('z span',waveg_h);
+#set('override mesh order from material database', 1);
+#set('mesh order',2);
+
+
+####oil
+
+oil_x = zeros(1,5);
+oil_y = zeros(1,5);
+
+comc = 60e-7;
+
+oil_x(1) = 0;
+oil_x(2) = -comc;
+oil_x(3) = 0;
+oil_x(4) = comc;
+oil_x(5) = 0;
+
+oil_y(1) = -comc;
+oil_y(2) = 0;
+oil_y(3) = 0;
+oil_y(4) = 0;
+oil_y(5) = comc;
+
+r = 2e-6*ones(1,5);
+r2 = 2e-6*ones(1,5);
+rot = zeros(1,5);
+
+
+drop_script;
+for(i=1:5){
+    drop(i,oil_x,oil_y,r,r2,rot,slab_h);
+}
+
+#### taper
+
+##addpoly;
+##set('index',n_air);
+##set('x',0);
+##set('y',0);
+##set('z',0);
+##vtx = [outp_x+waveg_l/2,outp_y(2)+outp_t2/2 ; outp_x+waveg_l/2,outp_y(2)-outp_t2/2 ; outp_x+waveg_l/2+taper_l,outp_y(2)-inp_t/2 ; outp_x+waveg_l/2+taper_l,outp_y(2)+inp_t/2];  
+##set("name","taper");
+##set("vertices",vtx);
+##set("z span",slab_h);
+
+##addpoly;
+##set('index',n_air);
+##set('x',0);
+##set('y',0);
+##set('z',0);
+##vtx = [outp_x+waveg_l/2,outp_y(1)+outp_t1/2 ; outp_x+waveg_l/2,outp_y(1)-outp_t1/2 ; outp_x+waveg_l/2+taper_l,outp_y(1)-inp_t/2 ; outp_x+waveg_l/2+taper_l,outp_y(1)+inp_t/2];  
+##set("name","taper_o");
+##set("vertices",vtx);
+##set("z span",slab_h);
+
+###feedback
+###feedback1
+#rr = 12e-6;
+#addring;
+#set("name","ring1_a");
+#set('index',n_air);
+#set('x',outp_x+waveg_l/2);
+#set('y', outp_y(3)+rr-outp_t3/2);
+#set('z',0);set("z span",slab_h);
+#set('outer radius', rr );
+#set('inner radius',0);
+#set('theta start', -90);
+#set('theta stop', 90);
+
+#waveg_tf = 4e-6;
+#rri = rr -outp_t3/2-waveg_tf/2;
+#addring;
+#set("name","ring1_a_i");
+#set('index',1);
+#set('x',outp_x+waveg_l/2);
+#set('y',outp_y(3)+outp_t3/2+ rri);
+#set('z',0);set("z span",slab_h);
+#set('outer radius', rri);
+#set('inner radius',0);
+#set('theta start', -90);
+#set('theta stop', 90);
+
+rr1 = slab_l/2;
+addring;
+set("name","ring");
+set('index',n_air);
+set('x',slab_l/2);
+set('y', slab_l/2);
+set('z',0);set("z span",slab_h);
+set('outer radius', rr1+wavef_t/2 );
+set('inner radius', rr1-wavef_t/2);
+set('theta start', -90);
+set('theta stop', 180);
+
+#rr1i = rr1 -inp_t/2-waveg_tf/2;
+#addring;
+#set("name","ring2_a_i");
+#set('index',1);
+#set('x',inp_x-waveg_l/2);
+#set('y', rr1i+inp_y(3)+inp_t/2);
+#set('z',0);set("z span",slab_h);
+#set('outer radius', rr1i );
+#set('inner radius', 0);
+#set('theta start', 90);
+#set('theta stop', 270);
+
+addrect;
+set('name','waveg_f1');
+set('index',n_air);
+set('x max',slab_l/2);set('x min',slab_l/2 - 4*waveg_l);
+set('y',0);set('y span',wavef_t);
+set('z',0);set('z span',waveg_h);
+set('override mesh order from material database', 1);
+set('mesh order',2);
+
+addrect;
+set('name','waveg_f2');
+set('index',n_air);
+set('y max',slab_l/2);set('y min',slab_t/2 - 4*waveg_l);
+set('x',0);set('x span',wavef_t);
+set('z',0);set('z span',waveg_h);
+set('override mesh order from material database', 1);
+set('mesh order',2);
+
+###feedback2
+#rr = 12e-6;
+#addring;
+#set("name","ring12_a");
+#set('index',n_air);
+#set('x',outp_x+waveg_l/2);
+#set('y', outp_y(1)-rr+outp_t1/2);
+#set('z',0);set("z span",slab_h);
+#set('outer radius', rr );
+#set('inner radius',0);
+#set('theta start', -90);
+#set('theta stop', 90);
+
+#waveg_tf = 4e-6;
+#rri = rr -outp_t1/2-waveg_tf/2;
+#addring;
+#set("name","ring12_a_i");
+#set('index',1);
+#set('x',outp_x+waveg_l/2);
+#set('y',outp_y(1)-outp_t3/2- rri);
+#set('z',0);set("z span",slab_h);
+#set('outer radius', rri);
+#set('inner radius',0);
+#set('theta start', -90);
+#set('theta stop', 90);
+
+#rr1 = (-outp_y(1)-outp_t1/2+ 2*rr + inp_y(1)+inp_t/2)/2;
+#addring;
+#set("name","ring22_a");
+#set('index',n_air);
+#set('x',inp_x-waveg_l/2);
+#set('y', -rr1+inp_y(1)+inp_t/2);
+#set('z',0);set("z span",slab_h);
+#set('outer radius', rr1 );
+#set('inner radius', 0);
+#set('theta start', 90);
+#set('theta stop', 270);
+
+#rr1i = rr1 -inp_t/2-waveg_tf/2;
+#addring;
+#set("name","ring22_a_i");
+#set('index',1);
+#set('x',inp_x-waveg_l/2);
+#set('y', -rr1i+inp_y(1)-inp_t/2);
+#set('z',0);set("z span",slab_h);
+#set('outer radius', rr1i );
+#set('inner radius', 0);
+#set('theta start', 90);
+#set('theta stop', 270);
+
+
+#addrect;
+#set('name','waveg_f_a');
+#set('index',n_air);
+#set('x min',inp_x-waveg_l/2);set('x max',outp_x+waveg_l/2);
+#set('y',outp_y(1)-outp_t3/2-2*rri-waveg_tf/2);set('y span',waveg_tf);
+#set('z',0);set('z span',waveg_h);
+#set('override mesh order from material database', 1);
+#set('mesh order',2);
+
+
+
+
+##### movie monitors
+
+#addmovie;
+#set('name','movie');
+#set('monitor type','2D Z-normal');
+#set('x min',-slab_l/2 -2e-6);set('x max',slab_l+5e-6);
+#set('y min',-slab_t/2 -2e-6);set('y max',slab_l+5e-6);
+#set('z',0);
+#set('horizontal resolution',400);
+#set('lock aspect ratio',1);
+
+
+##### power monitors
+
+
+##addpower;
+##set('name','outp1');
+##set('monitor type','Linear X');
+##set('x',0);set('x span',inp_t+0.5e-6);
+##set('y',-slab_l/2-1e-6);
+##set('z',0);
+
+##addpower;
+##set('name','outp2');
+##set('monitor type','Linear Y');
+##set('x',slab_l/2 + 0.5e-6);
+##set('y',outp_y(2));set('y span',outp_t2+0.5e-6);
+##set('z',0);
+
+##addpower;
+##set('name','inpp1');
+##set('monitor type','Linear Y');
+##set('x',-slab_l/2 - 0.1e-6);
+##set('y',inp_y(1));set('y span',inp_t+0.5e-6);
+##set('z',0);
+
+##addpower;
+##set('name','inpp2');
+##set('monitor type','Linear Y');
+##set('x',-slab_l/2 - 0.1e-6);
+##set('y',inp_y(2));set('y span',inp_t+0.5e-6);
+##set('z',0);
+
+#### time monitor
+
+
+addtime;
+set('name','outp1');
+set('monitor type','Linear X');
+set('x',0);set('x span',outp_t2+0.5e-6);
+set('y',-slab_t/2-1e-6);
+set('z',0);
+
+
+##addtime;
+##set('name','outp2');
+##set('monitor type','Linear Y');
+##set('x',slab_l/2 + 0.5e-6);
+##set('y',outp_y(1));set('y span',outp_t1+0.5e-6);
+##set('z',0);
+
+##addtime;
+##set('name','outp3');
+##set('monitor type','Linear Y');
+##set('x',slab_l/2 + 0.5e-6);
+##set('y',outp_y(3));set('y span',outp_t3+0.5e-6);
+##set('z',0);
+
+##addtime;
+##set('name','inpp1');
+##set('monitor type','Linear Y');
+##set('x',-slab_l/2 - 0.1e-6);
+##set('y',inp_y(1));set('y span',inp_t+0.5e-6);
+##set('z',0);
+
+##addtime;
+##set('name','inpp2');
+##set('monitor type','Linear Y');
+##set('x',-slab_l/2 - 0.1e-6);
+##set('y',inp_y(2));set('y span',inp_t+0.5e-6);
+##set('z',0);
+
+## fdtd
+addfdtd;
+set('dimension','2D');
+set('x min',-slab_l/2 -2e-6);set('x max',slab_l+5e-6);
+set('y min',-slab_t/2 -2e-6);set('y max',slab_l+5e-6);
+set('z',0);
+set('simulation time',1500e-15);
+set('mesh accuracy',4);
+
+##addmesh;
+##set('x min',-oxide_l/2);set('x max',oxide_l/2);
+##set('y',0);set('y span',slab_t);
+##set('z min',-source_h/2);set('z max',oil_h+slab_h/2);
+##set('override x mesh',1);
+##set('dx',0.2e-6);
+##set('override y mesh',1);
+##set('dy',0.05e-6);
+##set('override z mesh',1);
+##set('dz',0.02e-6);
+
+
+custom_source_script;
+
+custom_source(1,1,source_x,0,source_t,source_h);
+run;
+extract_power_init;
+P11 = abs(P);
+
+switchtolayout;
+select('custom_source');
+delete;
+custom_source(1,0,source_x,0,source_t,source_h);
+run;
+extract_power_init;
+P10 = abs(P);
+extract_power_init1;
+P01 = abs(P);
+
+cal_err_script;
+
+
+errormin = cal_err(P11,P10,P01);
+
+minimum = errormin; 

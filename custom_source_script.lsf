@@ -1,0 +1,66 @@
+function custom_source(A1,A2,source_x,source_y,source_t,source_h){
+    if (1) {
+  t = linspace(0,2000e-15, 10000);# the max. time of this vector will affect when does the auto shutoff kicks in. Specify the smallest t_max possible.
+  frequency= 193.41e12;
+  w_center = frequency*2*pi;   # 300 THz
+  pulselength = 100e-15;
+  delta_t = pulselength/(2*sqrt(log(2)));
+  offset1   = 200e-15;
+  offset2   = 1100e-15;
+  
+  # sinusoid with double gaussian envelope 
+  pulse = A1*sin( -w_center*(t-offset1)) * exp( -(t-offset1)^2/2/delta_t^2 ) + 
+          A2*sin( -w_center*(t-offset2)) * exp( -(t-offset2)^2/2/delta_t^2 );
+  
+  # use this code to write the time signal to a text file
+  if (0) { write("time.txt",num2str([t, pulse])); }
+} 
+
+# Use this code to read the time signal from a text file
+if (0) {
+  data  = readdata("time.txt");
+  t     = pinch(data,2,1);
+  pulse = pinch(data,2,2);
+} 
+
+# plot specified time signal
+#plot(t*1e15,pulse,"time (fs)","signal","Specified pulse");
+
+
+
+#######################################################
+# convert into complex valued format required by source
+# make signal complex valued
+
+# fft time signal
+pulse_w=fft(pulse);
+w=fftw(t);
+
+# set high frequency components to zero
+# and compensate amplitude
+n=length(pulse_w);
+pulse_w((n/2+1):n)=matrix(n/2); 
+pulse_w=pulse_w*2;
+
+# inverse fft the signal
+pulse_final=invfft(pulse_w);
+t3=fftw(w);
+
+# apply a required phase shift
+pulse_final=pulse_final*1i;  
+
+
+#######################################################
+# load signal into source
+### source
+addmode;
+set('name','custom_source');
+set('mode selection','fundamental TM mode');
+set('amplitude',10);
+set('x',source_x);
+set('y',source_y);set('y span',source_t);
+set('z',0);set('z span',source_h);
+setsourcesignal("custom_source", t3, abs(pulse_final),unwrap(angle(pulse_final)));
+
+return 0;
+}
